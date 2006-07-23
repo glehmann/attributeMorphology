@@ -3,7 +3,7 @@
 #include "itkCommand.h"
 #include "itkSimpleFilterWatcher.h"
 
-#include "itkImageFilter.h"
+#include "itkAreaOpeningImageFilter.h"
 
 
 int main(int, char * argv[])
@@ -17,11 +17,11 @@ int main(int, char * argv[])
   ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( argv[1] );
 
-  typedef itk::ImageFilter< IType, IType > FilterType;
+  typedef itk::AreaOpeningImageFilter< IType, IType > FilterType;
   FilterType::Pointer filter = FilterType::New();
   filter->SetInput( reader->GetOutput() );
-
-  itk::SimpleFilterWatcher watcher(filter, "filter");
+  filter->SetLambda(200);
+//  itk::SimpleFilterWatcher watcher(filter, "filter");
 
   typedef itk::ImageFileWriter< IType > WriterType;
   WriterType::Pointer writer = WriterType::New();
