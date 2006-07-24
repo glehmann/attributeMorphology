@@ -132,7 +132,7 @@ FaceCalculatorType;
       // need a bounds check for each neighbour
       for (unsigned i = 0; i<TheseOffsets.size();i++)
 	{
-	if (fit->IsInside(ThisWhere + TheseOffsets[i]))
+	if (output->GetRequestedRegion().IsInside(ThisWhere + TheseOffsets[i]))
 	  {
 	  long NeighInd = ThisPos + TheseDirectOffsets[i];
 	  InputPixelType NeighPix = m_Raw[NeighInd];
