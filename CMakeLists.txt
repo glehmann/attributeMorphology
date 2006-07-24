@@ -104,6 +104,21 @@ ENDIF(BUILD_TESTING)
 #any tests you can comment out or delete the following line.
 # ADD_TEST(Testname ExecutableToRun arg1 arg2 arg3)
 
-ADD_TEST(AreaOpening50 testAreaOpening ${INPUT_IMAGE} out50.png 50)
-ADD_TEST(AreaOpening100 testAreaOpening ${INPUT_IMAGE} out100.png 100)
-ADD_TEST(AreaOpening200 testAreaOpening ${INPUT_IMAGE} out200.png 200)
+FOREACH(F 0 1)
+  FOREACH(s 50 100 200 1000)
+    ADD_TEST(AreaOpening-${s}-${F} testAreaOpening ${INPUT_IMAGE} opening-${s}-${F}.png ${s} ${F})
+    ADD_TEST(AreaOpening-${s}-${F}-Compare ${IMAGE_COMPARE} opening-${s}-${F}.png ${CMAKE_SOURCE_DIR}/images/opening-${s}-${F}.png)
+  
+    ADD_TEST(AreaClosing-${s}-${F} testAreaClosing ${INPUT_IMAGE} closing-${s}-${F}.png ${s} ${F})
+    ADD_TEST(AreaClosing-${s}-${F}-Compare ${IMAGE_COMPARE} closing-${s}-${F}.png ${CMAKE_SOURCE_DIR}/images/closing-${s}-${F}.png)
+  ENDFOREACH(s)
+ENDFOREACH(F)
+
+FOREACH(s 50 200)
+  ADD_TEST(PhysicalSizeOpening3D${s} testPhysicalSizeOpening3D ${CMAKE_SOURCE_DIR}/images/ESCells.img ESCells-opening-${s}.tif ${s})
+  ADD_TEST(PhysicalSizeOpening3D${s}Compare ${IMAGE_COMPARE} ESCells-opening-${s}.tif ${CMAKE_SOURCE_DIR}/images/ESCells-opening-${s}.tif)
+
+  ADD_TEST(PhysicalSizeClosing3D${s} testPhysicalSizeClosing3D ${CMAKE_SOURCE_DIR}/images/ESCells.img ESCells-closing-${s}.tif ${s})
+  ADD_TEST(PhysicalSizeClosing3D${s}Compare ${IMAGE_COMPARE} ESCells-closing-${s}.tif ${CMAKE_SOURCE_DIR}/images/ESCells-closing-${s}.tif)
+ENDFOREACH(s)
+
