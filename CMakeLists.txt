@@ -62,7 +62,7 @@ ENDIF(BUILD_WRAPPERS)
 
 IF(BUILD_TESTING)
 
-SET(CurrentExe "check")
+SET(CurrentExe "testAreaOpening")
 ADD_EXECUTABLE(${CurrentExe} ${CurrentExe}.cxx)
 TARGET_LINK_LIBRARIES(${CurrentExe} ${Libraries})
 
@@ -76,5 +76,6 @@ ENDIF(BUILD_TESTING)
 #any tests you can comment out or delete the following line.
 # ADD_TEST(Testname ExecutableToRun arg1 arg2 arg3)
 
-ADD_TEST(Run check ${INPUT_IMAGE} out.png)
-ADD_TEST(CompareImage ${IMAGE_COMPARE} out.png ${CMAKE_SOURCE_DIR}/images/test.png)
+ADD_TEST(AreaOpening50 testAreaOpening ${INPUT_IMAGE} out50.png 50)
+ADD_TEST(AreaOpening100 testAreaOpening ${INPUT_IMAGE} out100.png 100)
+ADD_TEST(AreaOpening200 testAreaOpening ${INPUT_IMAGE} out200.png 200)
