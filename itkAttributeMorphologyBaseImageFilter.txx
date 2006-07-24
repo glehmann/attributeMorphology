@@ -50,6 +50,8 @@ AttributeMorphologyBaseImageFilter< TInputImage, TOutputImage, TAttribute, TFunc
   // Allocate the output
   this->AllocateOutputs();
 
+  TFunction compare;
+
   unsigned long buffsize = output->GetRequestedRegion().GetNumberOfPixels();
 
   SizeType kernelRadius;
@@ -121,7 +123,7 @@ FaceCalculatorType;
 	{
 	long NeighInd = ThisPos + TheseDirectOffsets[i];
 	InputPixelType NeighPix = m_Raw[NeighInd];
-	if ((ThisPix < NeighPix) || ((ThisPix == NeighPix) && (NeighInd < ThisPos)))
+	if (compare(NeighPix, ThisPix) || ((ThisPix == NeighPix) && (NeighInd < ThisPos)))
 	  {
 	  Union(NeighInd, ThisPos);
 	  }
@@ -136,7 +138,7 @@ FaceCalculatorType;
 	  {
 	  long NeighInd = ThisPos + TheseDirectOffsets[i];
 	  InputPixelType NeighPix = m_Raw[NeighInd];
-	  if ((ThisPix < NeighPix) || ((ThisPix == NeighPix) && (NeighInd < ThisPos)))
+	  if (compare(NeighPix, ThisPix) || ((ThisPix == NeighPix) && (NeighInd < ThisPos)))
 	    {
 	    Union(NeighInd, ThisPos);
 	    }
