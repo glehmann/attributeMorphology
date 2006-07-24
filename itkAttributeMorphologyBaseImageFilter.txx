@@ -62,7 +62,7 @@ FaceCalculatorType;
   typename FaceCalculatorType::FaceListType faceList;
   faceList = faceCalculator(input, output->GetRequestedRegion(), kernelRadius);
   typename FaceCalculatorType::FaceListType::iterator fit;
-  ProgressReporter progress(this, 0, 5);  // pretend we have 5 steps
+  ProgressReporter progress(this, 0, buffsize*4);  // pretend we have 4 steps
 
   fit = faceList.begin();
 
@@ -94,6 +94,7 @@ FaceCalculatorType;
 #endif
     m_Parent[pos]=INACTIVE;
     m_AuxData[pos] = -1;  // invalid value;
+    progress.CompletedPixel();
     }
   progress.CompletedPixel();
   std::sort(&(m_SortPixels[0]), &(m_SortPixels[buffsize - 1]), ComparePixStruct());
@@ -145,8 +146,8 @@ FaceCalculatorType;
 	  }
 	}
       }
-    }
     progress.CompletedPixel();
+    }
 #else
   MakeSet(m_SortPixels[0].Pos);
   m_Processed[0] = true;
@@ -205,8 +206,8 @@ FaceCalculatorType;
 	}
       }
     m_Processed[ThisPos] = true;
+    progress.CompletedPixel();
     }
-  progress.CompletedPixel();
   
 #endif
 
@@ -236,10 +237,12 @@ FaceCalculatorType;
       // Original value already in raw
       }
 #endif
+    progress.CompletedPixel();
     }
   for (pos = 0;pos < buffsize; ++pos, ++ORegIt)
     {
     ORegIt.Set(static_cast<OutputPixelType>(m_Raw[pos]));
+    progress.CompletedPixel();
     }
 
 #else
@@ -255,13 +258,14 @@ FaceCalculatorType;
       {
       m_Parent[RPos] = m_Parent[m_Parent[RPos]];
       }
+    progress.CompletedPixel();
     }
   for (pos = 0;pos < buffsize; ++pos, ++ORegIt)
     {
     ORegIt.Set(static_cast<OutputPixelType>(m_Parent[pos]));
+    progress.CompletedPixel();
     }
 #endif
-  progress.CompletedPixel();
 
   delete [] m_Raw;
   delete [] m_SortPixels;
