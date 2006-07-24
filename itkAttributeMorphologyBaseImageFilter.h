@@ -151,7 +151,7 @@ private:
   {
   public:
     InputPixelType Val;
-    long Pos;             
+    long Pos;
     IndexType Where;     // For bounds checks
   };
 

@@ -76,11 +76,10 @@ FaceCalculatorType;
   // copy the pixels to the sort buffer
   typedef ImageRegionConstIteratorWithIndex<TInputImage> CRegionIteratorType;
   CRegionIteratorType RegIt(input, output->GetRequestedRegion());
-  RegIt.GoToBegin();
   //IndexType Origin = RegIt.GetIndex();
   long int pos = 0;
 
-  for (;!RegIt.IsAtEnd();++RegIt, ++pos)
+  for (RegIt.GoToBegin();!RegIt.IsAtEnd();++RegIt, ++pos)
     {
     GreyAndPos P;
     P.Val = RegIt.Get();
@@ -102,6 +101,7 @@ FaceCalculatorType;
   OffsetVecType TheseOffsets;
   OffsetDirectVecType TheseDirectOffsets;
   SetupOffsetVec(TheseDirectOffsets, TheseOffsets);
+
   // the core algorithm
   // process first pixel
 #ifdef PAMI
@@ -209,7 +209,8 @@ FaceCalculatorType;
 #endif
 
 
-  // copy pixels back 
+  // resolving phase
+  // copy pixels back
   typedef ImageRegionIterator<TOutputImage> RegionIteratorType;
   RegionIteratorType ORegIt(output, output->GetRequestedRegion());
   ORegIt.GoToBegin();
