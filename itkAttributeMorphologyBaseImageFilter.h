@@ -33,7 +33,7 @@ namespace itk
  * are interested.
  */
 
-template <class TInputImage, class TOutputImage, class TFunction>
+template <class TInputImage, class TOutputImage, class TAttribute, class TFunction>
 class ITK_EXPORT AttributeMorphologyBaseImageFilter : 
     public ImageToImageFilter< TInputImage, TOutputImage > 
 {
@@ -73,6 +73,7 @@ public:
 //   typedef   typename TInputImage::SizeType        SizeType;
   typedef   typename TOutputImage::RegionType     RegionType;
   typedef   std::list<IndexType>                  ListType;
+  typedef TAttribute AttributeType;
 
   /** 
    * Smart pointer typedef support 
@@ -100,13 +101,14 @@ public:
   itkGetConstReferenceMacro(FullyConnected, bool);
   itkBooleanMacro(FullyConnected);
 
-  itkSetMacro(Lambda, long);
-  itkGetConstReferenceMacro(Lambda, long);
+  itkSetMacro(Lambda, AttributeType);
+  itkGetMacro(Lambda, AttributeType);
 
 protected:
   AttributeMorphologyBaseImageFilter() 
     {
     m_FullyConnected = false;
+    m_AttributeValuePerPixel = 1;
     }
   virtual ~AttributeMorphologyBaseImageFilter() {}
   AttributeMorphologyBaseImageFilter(const Self&) {}
@@ -128,10 +130,12 @@ protected:
    * \sa ProcessObject::EnlargeOutputRequestedRegion() */
   void EnlargeOutputRequestedRegion(DataObject *itkNotUsed(output));
   
+  AttributeType m_AttributeValuePerPixel;
+
 private:
 
   bool m_FullyConnected;
-  long m_Lambda;
+  AttributeType m_Lambda;
 
   // some constants used several times in the code
   static const long INACTIVE = -1;
@@ -139,7 +143,7 @@ private:
   static const long ROOT = -3;
 
   // Just used for area/volume openings at the moment
-  long * m_AuxData;
+  AttributeType * m_AuxData;
 
   typedef std::vector<OffsetType> OffsetVecType;
   // offset in the linear array.
@@ -183,7 +187,7 @@ private:
   void MakeSet(long x)
   {
     m_Parent[x] = ACTIVE;
-    m_AuxData[x] = 1;
+    m_AuxData[x] = m_AttributeValuePerPixel;
   }
 
   long FindRoot(long x)
@@ -226,7 +230,7 @@ private:
   void MakeSet(long x)
   {
     m_Parent[x] = ACTIVE;
-    m_AuxData[x] = 1;
+    m_AuxData[x] = m_AttributeValuePerPixel;
   }
 
   void Link(long x, long y)
@@ -235,15 +239,15 @@ private:
       {
       // should be a call to MergeAuxData
       m_AuxData[y] = m_AuxData[x] + m_AuxData[y];
-      m_AuxData[x] = -1;
+      m_AuxData[x] = -m_AttributeValuePerPixel;
       }
     else if (m_Parent[x] == ACTIVE)
       {
-      m_AuxData[x] = -1;
+      m_AuxData[x] = -m_AttributeValuePerPixel;
       }
     else
       {
-      m_AuxData[y] = -1;
+      m_AuxData[y] = -m_AttributeValuePerPixel;
       m_Parent[y] = INACTIVE;
       }
     m_Parent[x] = y;
@@ -279,7 +283,7 @@ private:
       else if (m_Parent[p] == ACTIVE)
 	{
 	m_Parent[p] = INACTIVE;
-	m_AuxData[p] = -1;
+	m_AuxData[p] = -m_AttributeValuePerPixel;
 	}
       }
   }

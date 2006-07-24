@@ -14,9 +14,9 @@
 
 namespace itk
 {
-template< class TInputImage, class TOutputImage, class TFunction>
+template< class TInputImage, class TOutputImage, class TAttribute, class TFunction>
 void
-AttributeMorphologyBaseImageFilter< TInputImage, TOutputImage, TFunction >
+AttributeMorphologyBaseImageFilter< TInputImage, TOutputImage, TAttribute, TFunction >
 ::GenerateInputRequestedRegion()
 {
   // call the superclass' implementation of this method
@@ -30,9 +30,9 @@ AttributeMorphologyBaseImageFilter< TInputImage, TOutputImage, TFunction >
 
 
 
-template <class TInputImage, class TOutputImage, class TFunction>
+template <class TInputImage, class TOutputImage, class TAttribute, class TFunction>
 void 
-AttributeMorphologyBaseImageFilter<TInputImage, TOutputImage, TFunction >
+AttributeMorphologyBaseImageFilter<TInputImage, TOutputImage, TAttribute, TFunction >
 ::EnlargeOutputRequestedRegion(DataObject *)
 {
   this->GetOutput()
@@ -40,9 +40,9 @@ AttributeMorphologyBaseImageFilter<TInputImage, TOutputImage, TFunction >
 }
 
 
-template< class TInputImage, class TOutputImage, class TFunction >
+template< class TInputImage, class TOutputImage, class TAttribute, class TFunction >
 void
-AttributeMorphologyBaseImageFilter< TInputImage, TOutputImage, TFunction >
+AttributeMorphologyBaseImageFilter< TInputImage, TOutputImage, TAttribute, TFunction >
 ::GenerateData()
 {
   typename TOutputImage::Pointer output = this->GetOutput();
@@ -71,7 +71,7 @@ FaceCalculatorType;
 #endif
   // This is a bit ugly, but I can't see an easy way around
   m_Raw = new InputPixelType[buffsize];
-  m_AuxData = new long[buffsize];
+  m_AuxData = new AttributeType[buffsize];
 
   // copy the pixels to the sort buffer
   typedef ImageRegionConstIteratorWithIndex<TInputImage> CRegionIteratorType;
@@ -270,9 +270,9 @@ FaceCalculatorType;
   delete [] m_AuxData;
 }
 
-template< class TInputImage, class TOutputImage, class TFunction >
+template< class TInputImage, class TOutputImage, class TAttribute, class TFunction >
 void
-AttributeMorphologyBaseImageFilter< TInputImage, TOutputImage, TFunction >
+AttributeMorphologyBaseImageFilter< TInputImage, TOutputImage, TAttribute, TFunction >
 ::SetupOffsetVec(OffsetDirectVecType &PosOffsets, OffsetVecType &Offsets)
 {
   typedef ConstShapedNeighborhoodIterator<TOutputImage> NeighType;
@@ -306,9 +306,9 @@ AttributeMorphologyBaseImageFilter< TInputImage, TOutputImage, TFunction >
     }
 }
 
-template< class TInputImage, class TOutputImage, class TFunction >
+template< class TInputImage, class TOutputImage, class TAttribute, class TFunction >
 void
-AttributeMorphologyBaseImageFilter< TInputImage, TOutputImage, TFunction >
+AttributeMorphologyBaseImageFilter< TInputImage, TOutputImage, TAttribute, TFunction >
 ::PrintSelf(std::ostream& os, Indent indent) const
 {
   Superclass::PrintSelf(os,indent);

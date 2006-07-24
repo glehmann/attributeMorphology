@@ -7,12 +7,12 @@ namespace itk
 {
 template <class TInputImage, class TOutputImage>
 class ITK_EXPORT AreaOpeningImageFilter :
-    public AttributeMorphologyBaseImageFilter<TInputImage, TOutputImage, std::greater<typename TInputImage::PixelType> >
+    public AttributeMorphologyBaseImageFilter<TInputImage, TOutputImage, unsigned long, std::greater<typename TInputImage::PixelType> >
 
 {
 public:
   typedef AreaOpeningImageFilter Self;
-  typedef AttributeMorphologyBaseImageFilter<TInputImage, TOutputImage, std::greater<typename TInputImage::PixelType> > Superclass;
+  typedef AttributeMorphologyBaseImageFilter<TInputImage, TOutputImage, unsigned long, std::greater<typename TInputImage::PixelType> > Superclass;
 
   typedef SmartPointer<Self>   Pointer;
   typedef SmartPointer<const Self>  ConstPointer;
