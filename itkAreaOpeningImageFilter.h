@@ -17,6 +17,21 @@ public:
   typedef SmartPointer<Self>   Pointer;
   typedef SmartPointer<const Self>  ConstPointer;
 
+  /**
+   * Extract some information from the image types.  Dimensionality
+   * of the two images is assumed to be the same.
+   */
+  typedef typename TOutputImage::PixelType OutputPixelType;
+  typedef typename TOutputImage::InternalPixelType OutputInternalPixelType;
+  typedef typename TInputImage::PixelType InputPixelType;
+  typedef typename TInputImage::InternalPixelType InputInternalPixelType;
+  typedef typename TInputImage::IndexType IndexType;
+  typedef typename TInputImage::OffsetType OffsetType;
+  typedef typename TInputImage::SizeType SizeType;
+
+  itkStaticConstMacro(ImageDimension, unsigned int,
+                      TOutputImage::ImageDimension);
+  
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
