@@ -107,9 +107,6 @@ protected:
   AttributeMorphologyBaseImageFilter() 
     {
     m_FullyConnected = false;
-    m_INACTIVE = -1;
-    m_ACTIVE = -2;
-    m_ROOT = -3;
     }
   virtual ~AttributeMorphologyBaseImageFilter() {}
   AttributeMorphologyBaseImageFilter(const Self&) {}
@@ -134,10 +131,12 @@ protected:
 private:
 
   bool m_FullyConnected;
-  long m_INACTIVE;
-  long m_ACTIVE;
-  long m_ROOT;
   long m_Lambda;
+
+  // some constants used several times in the code
+  static const long INACTIVE = -1;
+  static const long ACTIVE = -2;
+  static const long ROOT = -3;
 
   // Just used for area/volume openings at the moment
   long * m_AuxData;
@@ -183,7 +182,7 @@ private:
   // parent array to store area
   void MakeSet(long x)
   {
-    m_Parent[x] = m_ACTIVE;
+    m_Parent[x] = ACTIVE;
     m_AuxData[x] = 1;
   }
 
@@ -226,26 +225,26 @@ private:
   // version from ISMM paper
   void MakeSet(long x)
   {
-    m_Parent[x] = m_ACTIVE;
+    m_Parent[x] = ACTIVE;
     m_AuxData[x] = 1;
   }
 
   void Link(long x, long y)
   {
-    if ((m_Parent[y] == m_ACTIVE) && (m_Parent[x] == m_ACTIVE))
+    if ((m_Parent[y] == ACTIVE) && (m_Parent[x] == ACTIVE))
       {
       // should be a call to MergeAuxData
       m_AuxData[y] = m_AuxData[x] + m_AuxData[y];
       m_AuxData[x] = -1;
       }
-    else if (m_Parent[x] == m_ACTIVE)
+    else if (m_Parent[x] == ACTIVE)
       {
       m_AuxData[x] = -1;
       }
     else
       {
       m_AuxData[y] = -1;
-      m_Parent[y] = m_INACTIVE;
+      m_Parent[y] = INACTIVE;
       }
     m_Parent[x] = y;
   }
@@ -265,7 +264,7 @@ private:
 
   bool Equiv(long x, long y)
   {
-    return((m_Raw[x] == m_Raw[y]) || (m_Parent[x] == m_ACTIVE));
+    return((m_Raw[x] == m_Raw[y]) || (m_Parent[x] == ACTIVE));
   }
   
   void Union(long n, long p)
@@ -277,9 +276,9 @@ private:
 	{
 	Link(r, p);
 	}
-      else if (m_Parent[p] == m_ACTIVE)
+      else if (m_Parent[p] == ACTIVE)
 	{
-	m_Parent[p] = m_INACTIVE;
+	m_Parent[p] = INACTIVE;
 	m_AuxData[p] = -1;
 	}
       }

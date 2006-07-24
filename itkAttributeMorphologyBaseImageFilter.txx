@@ -91,7 +91,7 @@ FaceCalculatorType;
 #ifndef PAMI
     m_Processed[pos]=false;
 #endif
-    m_Parent[pos]=m_INACTIVE;
+    m_Parent[pos]=INACTIVE;
     m_AuxData[pos] = -1;  // invalid value;
     }
   progress.CompletedPixel();
@@ -166,10 +166,10 @@ FaceCalculatorType;
 	  {
 	  break;
 	  }
-	if ((m_Parent[QLoc] == m_ACTIVE) && 
+	if ((m_Parent[QLoc] == ACTIVE) && 
 	    (m_AuxData[QLoc] >= m_Lambda))
 	  {
-	  m_Parent[QLoc] = m_INACTIVE;
+	  m_Parent[QLoc] = INACTIVE;
 	  m_AuxData[QLoc]=-1;
 	  // dispose auxdata[QLoc]
 	  }
