@@ -192,7 +192,7 @@ FaceCalculatorType;
       {
       for (unsigned i = 0; i<TheseOffsets.size();i++)
 	{
-	if (fit->IsInside(ThisWhere + TheseOffsets[i]))
+	if (output->GetRequestedRegion().IsInside(ThisWhere + TheseOffsets[i]))
 	  {
 	  long NeighInd = ThisPos + TheseDirectOffsets[i];
 	  if (m_Processed[NeighInd])
