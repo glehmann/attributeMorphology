@@ -285,34 +285,19 @@ AttributeMorphologyBaseImageFilter< TInputImage, TOutputImage, TAttribute, TFunc
   SizeType KernRad;
   KernRad.Fill(1);
   NeighType It(KernRad,
-	       this->GetOutput(), this->GetOutput()->GetRequestedRegion());
+                this->GetOutput(), this->GetOutput()->GetRequestedRegion());
   setConnectivity(&It, m_FullyConnected);
   typename NeighType::IndexListType OffsetList;
   typename NeighType::IndexListType::const_iterator LIt;
 
   OffsetList = It.GetActiveIndexList();
-  SizeType Size = this->GetOutput()->GetRequestedRegion().GetSize();
-  SizeType SizeBuf;
-  SizeBuf[0] = 1;
+  IndexType idx = this->GetOutput()->GetRequestedRegion().GetIndex();
+  long offset = this->GetOutput()->ComputeOffset( idx );
 
-  for (unsigned i = 0;i<TInputImage::ImageDimension - 1; i++)
-    {
-    SizeBuf[i+1] = Size[i];
-    }
-  for (unsigned i = 1;i<TInputImage::ImageDimension ; i++)
-    {
-    SizeBuf[i] *= SizeBuf[i - 1];
-    }
   for (LIt = OffsetList.begin(); LIt != OffsetList.end(); LIt++)
     {
     OffsetType O = It.GetOffset(*LIt);
-    long oo = 0;
-    for (unsigned p = 0; p<TInputImage::ImageDimension; p++)
-      {
-      oo += O[p] * SizeBuf[p];
-      }
-    std::cout << O << " " << oo << std::endl;
-    PosOffsets.push_back(oo);
+    PosOffsets.push_back( this->GetOutput()->ComputeOffset( idx + O ) - offset );
     Offsets.push_back(O);
     }
 }
