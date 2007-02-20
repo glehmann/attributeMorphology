@@ -110,7 +110,7 @@ FaceCalculatorType;
 #ifdef PAMI
   MakeSet(m_SortPixels[0].Pos);
   //m_Processed[0] = true;
-  for (long k = 1; k < buffsize;k++)
+  for (unsigned long k = 1; k < buffsize;k++)
     {
     long ThisPos = m_SortPixels[k].Pos;
     IndexType ThisWhere = m_SortPixels[k].Where;
@@ -239,9 +239,9 @@ FaceCalculatorType;
 #endif
     progress.CompletedPixel();
     }
-  for (pos = 0;pos < buffsize; ++pos, ++ORegIt)
+  for (unsigned long ppos = 0;ppos < buffsize; ++ppos, ++ORegIt)
     {
-    ORegIt.Set(static_cast<OutputPixelType>(m_Raw[pos]));
+    ORegIt.Set(static_cast<OutputPixelType>(m_Raw[ppos]));
     progress.CompletedPixel();
     }
 
@@ -299,6 +299,10 @@ AttributeMorphologyBaseImageFilter< TInputImage, TOutputImage, TAttribute, TFunc
     {
     SizeBuf[i+1] = Size[i];
     }
+  for (unsigned i = 1;i<TInputImage::ImageDimension ; i++)
+    {
+    SizeBuf[i] *= SizeBuf[i - 1];
+    }
   for (LIt = OffsetList.begin(); LIt != OffsetList.end(); LIt++)
     {
     OffsetType O = It.GetOffset(*LIt);
@@ -307,6 +311,7 @@ AttributeMorphologyBaseImageFilter< TInputImage, TOutputImage, TAttribute, TFunc
       {
       oo += O[p] * SizeBuf[p];
       }
+    std::cout << O << " " << oo << std::endl;
     PosOffsets.push_back(oo);
     Offsets.push_back(O);
     }

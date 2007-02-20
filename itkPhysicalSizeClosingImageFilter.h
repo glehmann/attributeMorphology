@@ -42,7 +42,7 @@ protected:
     {
     // compute pixel size
     this->m_AttributeValuePerPixel = 1;
-    for( int i=0; i<ImageDimension; i++)
+    for( unsigned i=0; i<ImageDimension; i++)
       {
       this->m_AttributeValuePerPixel *= this->GetInput()->GetSpacing()[i];
       }
