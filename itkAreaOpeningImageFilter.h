@@ -35,13 +35,13 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  virtual ~AreaOpeningImageFilter() {}
+  /** Runtime information support. */
+  itkTypeMacro(AreaOpeningImageFilter, 
+               AttributeMorphologyBaseImageFilter);
+
 protected:
   AreaOpeningImageFilter(){}
-  void PrintSelf(std::ostream& os, Indent indent) const
-  {
-    os << indent << "Area opening: " << std::endl;
-  }
+  virtual ~AreaOpeningImageFilter() {}
 
 private:
 

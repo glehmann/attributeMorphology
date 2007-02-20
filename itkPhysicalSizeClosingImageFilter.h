@@ -35,9 +35,14 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  virtual ~PhysicalSizeClosingImageFilter() {}
+  /** Runtime information support. */
+  itkTypeMacro(PhysicalSizeClosingImageFilter, 
+               AttributeMorphologyBaseImageFilter);
+
 protected:
   PhysicalSizeClosingImageFilter(){}
+  virtual ~PhysicalSizeClosingImageFilter() {}
+
   void GenerateData()
     {
     // compute pixel size
