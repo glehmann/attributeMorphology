@@ -33,7 +33,7 @@ colorlinks,linkcolor={blue},citecolor={blue},urlcolor={blue},
 
 % The title should be descriptive enough for people to be able to find
 % the relevant document. 
-\title{}
+\title{Grayscale morphological attribute operations}
 
 % Increment the release number whenever significant changes are made.
 % The author and/or editor can define 'significant' however they like.
@@ -41,8 +41,8 @@ colorlinks,linkcolor={blue},citecolor={blue},urlcolor={blue},
 
 % At minimum, give your name and an email address.  You can include a
 % snail-mail address if you like.
-\author{}
-\authoraddress{}
+\author{Richard Beare}
+\authoraddress{Richard.Beare@med.monash.edu.au\\Department of Medicine\\Monash University\\Melbourne\\Australia}
 
 \begin{document}
 \maketitle
@@ -56,6 +56,11 @@ colorlinks,linkcolor={blue},citecolor={blue},urlcolor={blue},
 \noindent
 % The abstract should be a paragraph or two long, and describe the
 % scope of the document.
+Morphological area attribute openings and closings\cite{Cheng92,Vincent93a} are connected set
+operations that are able to remove parts of an image that meet certain
+criteria without changing the rest. This article describes a number of
+classes that implement morphological area attribute operations using
+the methods described by Meijster and Wilkinson \cite{meijster02}.
 \end{abstract}
 
 \tableofcontents
@@ -79,12 +84,106 @@ colorlinks,linkcolor={blue},citecolor={blue},urlcolor={blue},
 % \end{itemize}
 
 % \ref{cthead1}
+\section{Introduction}
+A morphological attribute opening is probably best described by
+considering application to a binary image, in which case all blobs
+with attributes meeting specific criteria will be removed and all
+others retained. The most common and useful criteria is the number of
+voxels (i.e. area or volume) - an opening by area attributes with a
+threshold of 20 will remove all blobs containing fewer than 20
+voxels. This operation can be implemented using connected component
+labelling approaches for binary images. Alternative attribute measures
+are possible, including perimeter and minimum enclosing
+rectangle\cite{Breen96}. Some of these attributes are not increasing
+so the resulting operations aren't strictly openings, but are
+idempotent.  There simplest way of extending this concept to gray
+scale images is to generate a series of binary images by thresholding
+at each distinct gray level. The binary image created by thresholding
+at gray level $j$ will be a subset of the image formed by thresholding
+at level $j-1$. The binary area opening described above can then be
+applied independently to each binary image and the output grayscale
+image computed as a union of the results.  An alternative description
+is to treat each peak independently. If the peak is smaller than the
+threshold area then form a region by collecting the all voxels with
+the next highest grey level that are connected to the peak. Repeat
+this process until the area exceeds the threshold. Set all pixels in
+the resulting region to the grey level of the most recently connected
+pixels.
+\section{Comparison of area attribute and traditional openings}
+The operation of traditional openings is based on the shape of a
+structuring element, with any feature where the structuring element
+doesn't ``fit'' being removed. Area attributes, on the other hand, are
+independent of shape and therefore can perform better in some
+circumstances. For example, an area attribute opening could retain
+long, linear structures and reject a range of compact
+objects. Connected set operations, such as area attribute openings,
+are dependent on connectivity. This can lead to undesirable results --
+e.g. a blob touching a linear structure would be retained in the
+previous example. In addition, breaks in connectivity could lead to
+parts of a linear structure being removed
+unexpectedly\footnote{Unexpected in the sense that a person probably
+wouldn't notice such breaks}. The ability to remove some parts of an
+image while leaving the rest unchanged in especially useful in top hat
+filters.
 
+\subsection{Examples}
 \begin{figure}[htbp]
-\centering
-\includegraphics{cthead1}
-\caption{The input image.\label{cthead1}}
+\begin{center}
+\subfigure[50 pixel opening]{\includegraphics[scale=0.7]{opening-50-1}}
+\subfigure[100 pixel opening]{\includegraphics[scale=0.7]{opening-100-1}}
+\subfigure[200 pixel opening]{\includegraphics[scale=0.7]{opening-200-1}}
+\subfigure[1000 pixel opening]{\includegraphics[scale=0.7]{opening-1000-1}}
+\caption{A series of area openings applied to the cthead image\label{fig:ctheadopening}}
+\end{center}
 \end{figure}
+\begin{figure}[htbp]
+\begin{center}
+\subfigure[50 pixel closing]{\includegraphics[scale=0.7]{closing-50-1}}
+\subfigure[100 pixel closing]{\includegraphics[scale=0.7]{closing-100-1}}
+\subfigure[200 pixel closing]{\includegraphics[scale=0.7]{closing-200-1}}
+\subfigure[1000 pixel closing]{\includegraphics[scale=0.7]{closing-1000-1}}
+\caption{A series of area closings applied to the cthead image\label{fig:ctheadclosing}}
+\end{center}
+\end{figure}
+
+Figures \ref{fig:ctheadopening} and \ref{fig:ctheadclosing} illustrate
+a series of progressively larger area openings and closings applied to
+the cthead image. In Figure \ref{fig:ctheadopening} progressively
+larger bright regions are removed from the image while progressively
+larger dark regions are removed in Figure \ref{fig:ctheadclosing}. In
+both cases the rest of the image is left unchanged. It is especially
+important to note that contours are preserved.
+
+If the peaks being removed were actually of interest then a top hat
+filter would be appropriate. The white top hat filter is the
+difference between the original image and the opened version, while
+the black top hat filter is the difference between the closed version
+of the image and the original -- see Figure \ref{fig:ctheadtophat}.
+\begin{figure}[htbp]
+\begin{center}
+\subfigure[White top hat of cthead1]{\includegraphics[scale=0.7]{wth}}
+\subfigure[Black top hat of cthead1]{\includegraphics[scale=0.7]{bth}}
+\caption{White and black top hat filter results with area attribute of 50.\label{fig:ctheadtophat}}
+\end{center}
+\end{figure}
+
+\section{Filter documentation}
+The filters described here implement the area attribute opening or
+closing using the method described by Meijster and Wilkinson
+\cite{meijster02}. The base class is {\em
+itkAttributeMorphologyBaseImageFilter}. There are two sets of
+subclasses -- {\em itkAreaOpeningImageFilter} and {\em
+itkAreaClosingImageFilter} and {\em itkPhysicalSizeOpeningImageFilter}
+and {\em itkPhysicalSizeClosingImageFilter}. The first two filters
+compute area/volume operations using units of voxel counts while the
+last two use physical units.
+
+These classes are templated on input and output image type and are
+controlled by two methods:
+\begin{itemize}
+\item {\bf [Set/Get]FullyConnected} : define whether the neighborhood used to define a region is fully or face connected.
+\item {\bf [Set/Get]Lambda} : set the area attribute.
+\end{itemize}
 
 
 \appendix
@@ -92,7 +191,7 @@ colorlinks,linkcolor={blue},citecolor={blue},urlcolor={blue},
 
 
 \bibliographystyle{plain}
-\bibliography{InsightJournal}
+\bibliography{local,InsightJournal}
 \nocite{ITKSoftwareGuide}
 
 \end{document}
