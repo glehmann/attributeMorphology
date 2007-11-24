@@ -58,7 +58,7 @@ colorlinks,linkcolor={blue},citecolor={blue},urlcolor={blue},
 % scope of the document.
 Morphological area attribute openings and closings\cite{Cheng92,Vincent93a} are connected set
 operations that are able to remove parts of an image that meet certain
-criteria without changing the rest. This article describes a number of
+criteria without changing the rest of the image. This article describes a number of
 classes that implement morphological area attribute operations using
 the methods described by Meijster and Wilkinson \cite{meijster02}.
 \end{abstract}
@@ -87,28 +87,37 @@ the methods described by Meijster and Wilkinson \cite{meijster02}.
 \section{Introduction}
 A morphological attribute opening is probably best described by
 considering application to a binary image, in which case all blobs
-with attributes meeting specific criteria will be removed and all
-others retained. The most common and useful criteria is the number of
-voxels (i.e. area or volume) - an opening by area attributes with a
-threshold of 20 will remove all blobs containing fewer than 20
-voxels. This operation can be implemented using connected component
-labelling approaches for binary images. Alternative attribute measures
-are possible, including perimeter and minimum enclosing
-rectangle\cite{Breen96}. Some of these attributes are not increasing
-so the resulting operations aren't strictly openings, but are
-idempotent.  There simplest way of extending this concept to gray
-scale images is to generate a series of binary images by thresholding
-at each distinct gray level. The binary image created by thresholding
-at gray level $j$ will be a subset of the image formed by thresholding
-at level $j-1$. The binary area opening described above can then be
-applied independently to each binary image and the output grayscale
-image computed as a union of the results.  An alternative description
-is to treat each peak independently. If the peak is smaller than the
-threshold area then form a region by collecting the all voxels with
-the next highest grey level that are connected to the peak. Repeat
-this process until the area exceeds the threshold. Set all pixels in
-the resulting region to the grey level of the most recently connected
-pixels.
+(aka connected components) with attributes meeting specific criteria
+will be removed and all others retained. The most common and useful
+criteria is the number of voxels (i.e. area or volume) - an opening by
+area attributes with a threshold of 20 will remove all blobs
+containing fewer than 20 voxels. This operation can be implemented
+using connected component labelling approaches for binary
+images. Alternative attribute measures are possible, including
+perimeter and minimum enclosing rectangle\cite{Breen96}. Some of these
+attributes are not increasing so the resulting operations aren't
+strictly openings, but are idempotent.  There simplest way of
+extending this concept to gray scale images is to generate a series of
+binary images by thresholding at each distinct gray level. The binary
+image created by thresholding at gray level $j$ will be a subset of
+the image formed by thresholding at level $j-1$. The binary area
+opening described above can then be applied independently to each
+binary image and the output grayscale image computed as a union of the
+results.  An alternative description is to treat each peak
+independently. If the peak is smaller than the threshold area then
+form a region by collecting the all voxels with the next highest grey
+level that are connected to the peak. Repeat this process until the
+area exceeds the threshold. Set all pixels in the resulting region to
+the grey level of the most recently connected pixels. The algorithm
+described in \cite{meijster02} is an efficient way of doing this.
+
+The most recent version of this package can be obtained from
+\url{http://voxel.jouy.inra.fr/darcsweb/}\footnote{The most recent
+versions can be obtained using darcs \cite{DarcsWebSite} with the
+command {\em darcs get
+http://voxel.jouy.inra.fr/\\darcs/contrib-itk/attributeMorphology}},
+
+
 \section{Comparison of area attribute and traditional openings}
 The operation of traditional openings is based on the shape of a
 structuring element, with any feature where the structuring element
