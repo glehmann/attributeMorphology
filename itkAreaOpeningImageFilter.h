@@ -5,6 +5,29 @@
 
 namespace itk
 {
+
+/**
+ * \class AreaOpeningImageFilter
+ * \brief Morphological opening by attributes
+ *
+ * This is the base class for morphology attribute
+ * operations. Attribute openings remove blobs according to criteria
+ * such as area. When applied to grayscale images it has the effect of
+ * trimming peaks based on area while leaving the rest of the image
+ * unchanged. It is possible to use attributes besides area, but no
+ * others are implemented yet. This filter uses some dodgy coding
+ * practices - most notably copying the image data to a linear buffer
+ * to allow direct implementation of the published algorithm. It
+ * should therefore be quite a good candidate to carry out tests of
+ * itk iterator performance with randomish access patterns. 
+ *
+ * This filter is implemented using the method of Wilkinson, "A
+ * comparison of algorithms for Connected set openings and Closings",
+ * A. Meijster and M. H. Wilkinson, PAMI, vol 24, no. 4, April 2002.
+ * Attempts at implementing the method from ISMM 2000 are also
+ * included, but operation appears incorrect. Check the ifdefs if you
+ * are interested.
+ */
 template <class TInputImage, class TOutputImage>
 class ITK_EXPORT AreaOpeningImageFilter :
     public AttributeMorphologyBaseImageFilter<TInputImage, TOutputImage, unsigned long, std::greater<typename TInputImage::PixelType> >
