@@ -1,3 +1,20 @@
+/*=========================================================================
+
+  Program:   Insight Segmentation & Registration Toolkit
+  Module:    $RCSfile: itkConvolutionImageFilter.h,v $
+  Language:  C++
+  Date:      $Date: 2009-02-17 20:58:48 $
+  Version:   $Revision: 1.4 $
+
+  Copyright ( c ) Insight Software Consortium. All rights reserved.
+  See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
+
+     This software is distributed WITHOUT ANY WARRANTY; without even
+     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+     PURPOSE.  See the above copyright notices for more information.
+
+=========================================================================*/
+
 #ifndef __itkPhysicalSizeClosingImageFilter_h
 #define __itkPhysicalSizeClosingImageFilter_h
 
@@ -35,22 +52,23 @@ class ITK_EXPORT PhysicalSizeClosingImageFilter :
 {
 public:
   typedef PhysicalSizeClosingImageFilter Self;
-  typedef AttributeMorphologyBaseImageFilter<TInputImage, TOutputImage, typename TInputImage::SpacingType::ValueType, std::less<typename TInputImage::PixelType> > Superclass;
+  typedef AttributeMorphologyBaseImageFilter<TInputImage, TOutputImage, typename TInputImage::SpacingType::ValueType, std::less<typename TInputImage::PixelType> >
+                                         Superclass;
 
-  typedef SmartPointer<Self>   Pointer;
+  typedef SmartPointer<Self>        Pointer;
   typedef SmartPointer<const Self>  ConstPointer;
 
   /**
    * Extract some information from the image types.  Dimensionality
    * of the two images is assumed to be the same.
    */
-  typedef typename TOutputImage::PixelType OutputPixelType;
+  typedef typename TOutputImage::PixelType         OutputPixelType;
   typedef typename TOutputImage::InternalPixelType OutputInternalPixelType;
-  typedef typename TInputImage::PixelType InputPixelType;
-  typedef typename TInputImage::InternalPixelType InputInternalPixelType;
-  typedef typename TInputImage::IndexType IndexType;
-  typedef typename TInputImage::OffsetType OffsetType;
-  typedef typename TInputImage::SizeType SizeType;
+  typedef typename TInputImage::PixelType          InputPixelType;
+  typedef typename TInputImage::InternalPixelType  InputInternalPixelType;
+  typedef typename TInputImage::IndexType          IndexType;
+  typedef typename TInputImage::OffsetType         OffsetType;
+  typedef typename TInputImage::SizeType           SizeType;
 
   itkStaticConstMacro(ImageDimension, unsigned int,
                       TOutputImage::ImageDimension);

@@ -1,5 +1,22 @@
-#ifndef _itkAttributeMorphologyBaseImageFilter_txx
-#define _itkAttributeMorphologyBaseImageFilter_txx
+/*=========================================================================
+
+  Program:   Insight Segmentation & Registration Toolkit
+  Module:    $RCSfile: itkConvolutionImageFilter.h,v $
+  Language:  C++
+  Date:      $Date: 2009-02-17 20:58:48 $
+  Version:   $Revision: 1.4 $
+
+  Copyright ( c ) Insight Software Consortium. All rights reserved.
+  See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
+
+     This software is distributed WITHOUT ANY WARRANTY; without even
+     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+     PURPOSE.  See the above copyright notices for more information.
+
+=========================================================================*/
+
+#ifndef __itkAttributeMorphologyBaseImageFilter_txx
+#define __itkAttributeMorphologyBaseImageFilter_txx
 
 #include "itkAttributeMorphologyBaseImageFilter.h"
 #include "itkImageRegionIterator.h"
@@ -9,7 +26,6 @@
 #include "itkConnectedComponentAlgorithm.h"
 #include "itkConstShapedNeighborhoodIterator.h"
 #include "itkNeighborhoodAlgorithm.h"
-
 
 
 namespace itk
@@ -27,7 +43,6 @@ AttributeMorphologyBaseImageFilter< TInputImage, TOutputImage, TAttribute, TFunc
   
   input->SetRequestedRegion( input->GetLargestPossibleRegion() );
 }
-
 
 
 template <class TInputImage, class TOutputImage, class TAttribute, class TFunction>
@@ -121,30 +136,30 @@ FaceCalculatorType;
       {
       // no need for bounds check on neighbours
       for (unsigned i = 0; i<TheseDirectOffsets.size();i++)
-	{
-	long NeighInd = ThisPos + TheseDirectOffsets[i];
-	InputPixelType NeighPix = m_Raw[NeighInd];
-	if (compare(NeighPix, ThisPix) || ((ThisPix == NeighPix) && (NeighInd < ThisPos)))
-	  {
-	  Union(NeighInd, ThisPos);
-	  }
-	}
+        {
+        long NeighInd = ThisPos + TheseDirectOffsets[i];
+        InputPixelType NeighPix = m_Raw[NeighInd];
+        if (compare(NeighPix, ThisPix) || ((ThisPix == NeighPix) && (NeighInd < ThisPos)))
+          {
+          Union(NeighInd, ThisPos);
+          }
+        }
       }
     else
       {
       // need a bounds check for each neighbour
       for (unsigned i = 0; i<TheseOffsets.size();i++)
-	{
-	if (output->GetRequestedRegion().IsInside(ThisWhere + TheseOffsets[i]))
-	  {
-	  long NeighInd = ThisPos + TheseDirectOffsets[i];
-	  InputPixelType NeighPix = m_Raw[NeighInd];
-	  if (compare(NeighPix, ThisPix) || ((ThisPix == NeighPix) && (NeighInd < ThisPos)))
-	    {
-	    Union(NeighInd, ThisPos);
-	    }
-	  }
-	}
+        {
+        if (output->GetRequestedRegion().IsInside(ThisWhere + TheseOffsets[i]))
+          {
+          long NeighInd = ThisPos + TheseDirectOffsets[i];
+          InputPixelType NeighPix = m_Raw[NeighInd];
+          if (compare(NeighPix, ThisPix) || ((ThisPix == NeighPix) && (NeighInd < ThisPos)))
+            {
+            Union(NeighInd, ThisPos);
+            }
+          }
+        }
       }
     progress.CompletedPixel();
     }
@@ -163,47 +178,47 @@ FaceCalculatorType;
     if (ThisPix != PrevPix)
       {
       for (long QPos = k-1; QPos >= 0; --QPos)
-	{
-	long QLoc = m_SortPixels[QPos].Pos;
-	if (m_Raw[QLoc] != PrevPix)
-	  {
-	  break;
-	  }
-	if ((m_Parent[QLoc] == ACTIVE) && 
-	    (m_AuxData[QLoc] >= m_Lambda))
-	  {
-	  m_Parent[QLoc] = INACTIVE;
-	  m_AuxData[QLoc]=-1;
-	  // dispose auxdata[QLoc]
-	  }
-	}
+        {
+        long QLoc = m_SortPixels[QPos].Pos;
+        if (m_Raw[QLoc] != PrevPix)
+          {
+          break;
+          }
+        if ((m_Parent[QLoc] == ACTIVE) && 
+            (m_AuxData[QLoc] >= m_Lambda))
+          {
+          m_Parent[QLoc] = INACTIVE;
+          m_AuxData[QLoc]=-1;
+          // dispose auxdata[QLoc]
+          }
+        }
       }
     MakeSet(ThisPos);
     if (fit->IsInside(ThisWhere))
       {
       // no need for neighbor bounds check
       for (unsigned i = 0; i<TheseDirectOffsets.size();i++)
-	{
-	long NeighInd = ThisPos + TheseDirectOffsets[i];
-	if (m_Processed[NeighInd])
-	  {
-	  Union(NeighInd, ThisPos);
-	  }
-	}
+        {
+        long NeighInd = ThisPos + TheseDirectOffsets[i];
+        if (m_Processed[NeighInd])
+          {
+          Union(NeighInd, ThisPos);
+          }
+        }
       }
     else
       {
       for (unsigned i = 0; i<TheseOffsets.size();i++)
-	{
-	if (output->GetRequestedRegion().IsInside(ThisWhere + TheseOffsets[i]))
-	  {
-	  long NeighInd = ThisPos + TheseDirectOffsets[i];
-	  if (m_Processed[NeighInd])
-	    {
-	    Union(NeighInd, ThisPos);
-	    }
-	  }
-	}
+        {
+        if (output->GetRequestedRegion().IsInside(ThisWhere + TheseOffsets[i]))
+          {
+          long NeighInd = ThisPos + TheseDirectOffsets[i];
+          if (m_Processed[NeighInd])
+            {
+            Union(NeighInd, ThisPos);
+            }
+          }
+        }
       }
     m_Processed[ThisPos] = true;
     progress.CompletedPixel();

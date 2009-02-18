@@ -1,3 +1,20 @@
+/*=========================================================================
+
+  Program:   Insight Segmentation & Registration Toolkit
+  Module:    $RCSfile: itkConvolutionImageFilter.h,v $
+  Language:  C++
+  Date:      $Date: 2009-02-17 20:58:48 $
+  Version:   $Revision: 1.4 $
+
+  Copyright ( c ) Insight Software Consortium. All rights reserved.
+  See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
+
+     This software is distributed WITHOUT ANY WARRANTY; without even
+     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+     PURPOSE.  See the above copyright notices for more information.
+
+=========================================================================*/
+
 #ifndef __itkAttributeMorphologyBaseImageFilter_h
 #define __itkAttributeMorphologyBaseImageFilter_h
 
@@ -41,7 +58,7 @@ public:
   /**
    * Standard "Self" & Superclass typedef.
    */
-  typedef AttributeMorphologyBaseImageFilter Self;
+  typedef AttributeMorphologyBaseImageFilter              Self;
   typedef ImageToImageFilter< TInputImage, TOutputImage > Superclass;
 
   /**
@@ -53,13 +70,13 @@ public:
    * Extract some information from the image types.  Dimensionality
    * of the two images is assumed to be the same.
    */
-  typedef typename TOutputImage::PixelType OutputPixelType;
+  typedef typename TOutputImage::PixelType         OutputPixelType;
   typedef typename TOutputImage::InternalPixelType OutputInternalPixelType;
-  typedef typename TInputImage::PixelType InputPixelType;
-  typedef typename TInputImage::InternalPixelType InputInternalPixelType;
-  typedef typename TInputImage::IndexType IndexType;
-  typedef typename TInputImage::OffsetType OffsetType;
-  typedef typename TInputImage::SizeType SizeType;
+  typedef typename TInputImage::PixelType          InputPixelType;
+  typedef typename TInputImage::InternalPixelType  InputInternalPixelType;
+  typedef typename TInputImage::IndexType          IndexType;
+  typedef typename TInputImage::OffsetType         OffsetType;
+  typedef typename TInputImage::SizeType           SizeType;
 
   itkStaticConstMacro(ImageDimension, unsigned int,
                       TOutputImage::ImageDimension);
@@ -73,12 +90,12 @@ public:
 //   typedef   typename TInputImage::SizeType        SizeType;
   typedef   typename TOutputImage::RegionType     RegionType;
   typedef   std::list<IndexType>                  ListType;
-  typedef TAttribute AttributeType;
+  typedef TAttribute                              AttributeType;
 
   /** 
    * Smart pointer typedef support 
    */
-  typedef SmartPointer<Self> Pointer;
+  typedef SmartPointer<Self>        Pointer;
   typedef SmartPointer<const Self>  ConstPointer;
   
   /**
@@ -134,7 +151,7 @@ protected:
 
 private:
 
-  bool m_FullyConnected;
+  bool          m_FullyConnected;
   AttributeType m_Lambda;
 
   // some constants used several times in the code
@@ -152,46 +169,50 @@ private:
   void SetupOffsetVec(OffsetDirectVecType &PosOffsets, OffsetVecType &Offsets);
 
   class GreyAndPos
-  {
-  public:
-    InputPixelType Val;
-    long Pos;
-    IndexType Where;     // For bounds checks
-  };
+    {
+    public:
+      InputPixelType Val;
+      long Pos;
+      IndexType Where;     // For bounds checks
+    };
 
-  GreyAndPos * m_SortPixels;
-  long * m_Parent;
+  GreyAndPos *     m_SortPixels;
+  long *           m_Parent;
 #ifndef PAMI
-  bool * m_Processed;
+  bool *           m_Processed;
 #endif
   // This is a bit ugly, but I can't see an easy way around
   InputPixelType * m_Raw;
 
   class ComparePixStruct
-  {
-  public:
+    {
+    public:
     TFunction m_TFunction;
     bool operator()(GreyAndPos const &l, GreyAndPos const &r) const
-    {
+      {
       if (m_TFunction(l.Val, r.Val))
-	return true;
+        {
+        return true;
+        }
       if (l.Val == r.Val)
-	return (l.Pos < r.Pos);
+        {
+        return (l.Pos < r.Pos);
+        }
       return false;
-    }
-  };
+      }
+    };
 
 #ifdef PAMI
   // version from PAMI. Note - using the AuxData array rather than the
   // parent array to store area
   void MakeSet(long x)
-  {
+    {
     m_Parent[x] = ACTIVE;
     m_AuxData[x] = m_AttributeValuePerPixel;
-  }
+    }
 
   long FindRoot(long x)
-  {
+    {
     if (m_Parent[x] >= 0)
       {
       m_Parent[x] = FindRoot(m_Parent[x]);
@@ -201,40 +222,40 @@ private:
       {
       return(x);
       }
-  }
+    }
 
   bool Criterion(long x, long y)
-  {
+    {
     return((m_Raw[x] == m_Raw[y]) || (m_AuxData[x] < m_Lambda));
-  }
+    }
   
   void Union(long n, long p)
-  {
+    {
     long r = FindRoot(n);
     if (r != p)
       {
       if (Criterion(r, p))
-	{
-	m_AuxData[p] += m_AuxData[r];
-	m_Parent[r] = p;
-	}
+        {
+        m_AuxData[p] += m_AuxData[r];
+        m_Parent[r] = p;
+        }
       else 
-	{
-	m_AuxData[p] = m_Lambda;
-	}
+        {
+        m_AuxData[p] = m_Lambda;
+        }
       }
-  }
+    }
 
 #else
   // version from ISMM paper
   void MakeSet(long x)
-  {
+    {
     m_Parent[x] = ACTIVE;
     m_AuxData[x] = m_AttributeValuePerPixel;
-  }
+    }
 
   void Link(long x, long y)
-  {
+    {
     if ((m_Parent[y] == ACTIVE) && (m_Parent[x] == ACTIVE))
       {
       // should be a call to MergeAuxData
@@ -251,10 +272,10 @@ private:
       m_Parent[y] = INACTIVE;
       }
     m_Parent[x] = y;
-  }
+    }
 
   long FindRoot(long x)
-  {
+    {
     if (m_Parent[x] >= 0)
       {
       m_Parent[x] = FindRoot(m_Parent[x]);
@@ -264,29 +285,29 @@ private:
       {
       return(x);
       }
-  }
+    }
 
   bool Equiv(long x, long y)
-  {
+    {
     return((m_Raw[x] == m_Raw[y]) || (m_Parent[x] == ACTIVE));
-  }
+    }
   
   void Union(long n, long p)
-  {
+    {
     long r = FindRoot(n);
     if (r != p)
       {
       if (Equiv(r, p))
-	{
-	Link(r, p);
-	}
+        {
+        Link(r, p);
+        }
       else if (m_Parent[p] == ACTIVE)
-	{
-	m_Parent[p] = INACTIVE;
-	m_AuxData[p] = -m_AttributeValuePerPixel;
-	}
+        {
+        m_Parent[p] = INACTIVE;
+        m_AuxData[p] = -m_AttributeValuePerPixel;
+        }
       }
-  }
+    }
 #endif
 };
   
